@@ -14,13 +14,30 @@
 <a type="button" href="/workshop" class="btn btn-success btn-lg">Create new workshop</a>
 
 <ul class="list-unstyled"></ul>
-<% workshops.forEach(function(workshop) { %>
+<% 
+var id = 0;
+workshops.forEach(function(workshop) { %>
     <li class="media my-4">
         <div class="media-body">
             <h5 class="mt-0 mb-1"><%= workshop.name %></h5>
-            <%= workshop.description %>        </div>        
+            <%= workshop.description %>        
+            
+        
+        </div>  
+        <form action = "/update-workshop" method="GET">
+            <button id="btn<%=id%>" type="submit" class="btn btn-warning">Modify</button>
+            <input hidden name = "update" value= "<%=id%>">
+        </form>
+        <form action = "/remove-workshop" method="POST">
+            <button id="btn<%=id%>" type="submit" class="btn btn-danger">Delete</button>
+            <input hidden name = "remove" value= "<%=id%>">
+        </form>
+
     </li>
-<% }); %>
+
+    
+<% id++;
+}); %>
 </ul>
 
 <footer>

@@ -45,18 +45,50 @@ app.post('/workshop', function (req, res) {
 app.get('/workshop/:name', function (req, res) {
     const workshopName = req.params.name
     InMemoryWorkshop.getWorkshopByName(workshopName)
-    .then(workshop => {
-        res.render('ejs/workshop', workshop)
-    })
+    InMemoryWorkshop.getWorkshopList()
+        .then(workshop => {
+            res.render('ejs/workshop', workshop)
+        })
     .catch(e =>ejs.send(e.message))
 })
 
 app.post('/remove-workshop', function (req, res) {
-    res.status(500).send("TODO")
+
+    const id = req.body.remove
+    InMemoryWorkshop.removeWorkshopById(id)
+    InMemoryWorkshop.getWorkshopList()
+    .then(workshops => {
+        res.render("index", {
+            workshops: workshops
+        })
+    })
+})
+app.get('/update-workshop', function (req, res) {
+    const workshopId = req.query.update
+    InMemoryWorkshop.getWorkshopById(workshopId)
+    .then(workshop => {
+        res.render('update-workshop', { workshop: workshop,
+                                        id: workshopId } )
+    })
+    .catch(e =>ejs.send(e.message))
 })
 
-app.post('/update-workshop', function(req, res) {
-    res.status(500).send("TODO")
+
+app.post('/update-workshop', function (req, res) {
+    const id = req.body.id
+    const name = req.body.name
+    const description = req.body.description
+    InMemoryWorkshop.updateWorkshop(id, name, description)
+        .then(() => {
+            InMemoryWorkshop.getWorkshopList()
+            .then(workshops => {
+                res.render("index", {
+                workshops: workshops
+                })
+            })
+        })
+        .catch(e =>res.send(e.message))
+
 })
 
 app.listen(3000, function () {
